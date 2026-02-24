@@ -1,0 +1,28 @@
+# NATS JetStream — M8Flow NATS Demo
+# Starts a single NATS server with JetStream enabled.
+#
+# Usage:
+#   docker compose up -d
+#   docker compose down
+
+services:
+  nats:
+    image: nats:2.10-alpine
+    container_name: m8flow-nats
+    command: ["-js", "-m", "8222"] # -js = JetStream, -m = monitoring port
+    ports:
+      - "4222:4222" # NATS client connections
+      - "8222:8222" # HTTP monitoring  →  http://localhost:8222
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost:8222/healthz",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
