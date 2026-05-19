@@ -9,6 +9,7 @@ Use this tutorial to learn the basic m8flow workflow setup: organize work with a
 - [Creating a process group](#creating-a-process-group)
 - [Creating a process model](#creating-a-process-model)
 - [Create the first workflow](#create-the-first-workflow)
+- [How to Use the User Task](#how-to-use-the-user-task)
 
 ## Before You Start
 
@@ -121,4 +122,151 @@ After creating a process model, use the modeler to run your first workflow.
    <div align="center">
       <img src="./images/process-instance.png" alt="Completed process instance in the list" width="720" />
    </div>
+
+## How to Use the User Task
+
+After opening a process model, you can convert a task element to a user task and attach a form to it.
+
+1. In the workflow, select the settings icon on a task element and choose **User Task** from the list. Alternatively, drag a new task box onto the canvas, select its settings icon, and choose **User Task**.
+
+   <div align="center">
+      <img src="./images/user-task-workflow.png" alt="Workflow with a task element" width="720" />
+   </div>
+
+2. Select the user task element to open its properties panel on the right side.
+
+   <div align="center">
+      <img src="./images/user-task-properties-panel.png" alt="User task properties panel" width="720" />
+   </div>
+
+   The properties panel contains the following tabs.
+
+   | Tab | Description |
+   |-----|-------------|
+   | **General** | Set the name and ID for the user task. |
+   | **Documentation** | Add documentation for the user task. |
+   | **Pre/Post Scripts** | Add scripts to run before or after the task. |
+   | **Web Form (JSON Schema)** | Attach a form to the user task. |
+   | **Instructions / Labels** | Add Markdown instructions displayed above the form on the task page. |
+   | **Guest Options** | Configure guest access options for the user task. |
+   | **Input/Output Management** | Manage input and output variables for the user task. |
+
+3. Open the **Web Form** tab and select **Launch Editor** to open the form editor.
+
+   <div align="center">
+      <img src="./images/user-task-web-form-tab.png" alt="Web Form tab in the properties panel" width="720" />
+   </div>
+
+   <div align="center">
+      <img src="./images/user-task-form-editor.png" alt="Form editor" width="720" />
+   </div>
+
+4. Enter a name for the form (for example, `sample-form`) and select **Create Files**. Three files are created: `sample-form-schema.json`, `sample-form-uischema.json`, and `sample-form-exampledata.json`.
+
+5. Copy the following content into the corresponding files.
+
+   **`sample-form-schema.json`**
+
+   ```json
+   {
+     "$schema": "http://json-schema.org/draft-07/schema#",
+     "title": "Sample Form",
+     "type": "object",
+     "properties": {
+       "name": {
+         "type": "string",
+         "title": "Name"
+       },
+       "email": {
+         "type": "string",
+         "title": "Email"
+       },
+       "age": {
+         "type": "number",
+         "title": "Age"
+       },
+       "gender": {
+         "type": "string",
+         "title": "Gender"
+       },
+       "address": {
+         "type": "string",
+         "title": "Address"
+       }
+     },
+     "required": [
+       "name",
+       "email",
+       "age",
+       "gender",
+       "address"
+     ]
+   }
+   ```
+
+   <div align="center">
+      <img src="./images/user-task-form-json-schema.png" alt="JSON schema file in the form editor" width="720" />
+   </div>
+
+   **`sample-form-uischema.json`**
+
+   ```json
+   {
+     "type": "VerticalLayout",
+     "elements": [
+       {
+         "type": "Control",
+         "scope": "#/properties/name"
+       },
+       {
+         "type": "Control",
+         "scope": "#/properties/email"
+       },
+       {
+         "type": "Control",
+         "scope": "#/properties/age"
+       },
+       {
+         "type": "Control",
+         "scope": "#/properties/gender"
+       },
+       {
+         "type": "Control",
+         "scope": "#/properties/address"
+       }
+     ]
+   }
+   ```
+
+   <div align="center">
+      <img src="./images/user-task-form-uischema.png" alt="UI schema file in the form editor" width="720" />
+   </div>
+
+6. Select **Close** in the bottom-left corner to return to the properties panel.
+
+   <div align="center">
+      <img src="./images/user-task-web-form-saved.png" alt="Web Form tab after attaching the form" width="720" />
+   </div>
+
+7. Save the workflow and select **Start** to run the process.
+
+   <div align="center">
+      <img src="./images/user-task-form-run.png" alt="Running the workflow with a user task form" width="720" />
+   </div>
+
+   The task page displays the default instructions above the form.
+
+8. Fill in the form and select **Submit** to complete the task.
+
+   <div align="center">
+      <img src="./images/user-task-form-submit.png" alt="Submitting the user task form" width="720" />
+   </div>
+
+9. Open **Process Instances** from the left sidebar to verify the workflow status.
+
+10. To view the form associated with the process model, open the process model page.
+
+    <div align="center">
+       <img src="./images/user-task-process-model-form.png" alt="Process model page showing the attached form" width="720" />
+    </div>
 
