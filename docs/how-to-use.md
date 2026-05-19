@@ -10,6 +10,7 @@ Use this tutorial to learn the basic m8flow workflow setup: organize work with a
 - [Creating a process model](#creating-a-process-model)
 - [Create the first workflow](#create-the-first-workflow)
 - [How to Use the User Task](#how-to-use-the-user-task)
+- [How to assign a task to User by Group](#how-to-assign-a-task-to-user-by-group)
 
 ## Before You Start
 
@@ -22,19 +23,19 @@ Use this tutorial to learn the basic m8flow workflow setup: organize work with a
 1. After signing in as `admin`, the admin home page opens.
 
    <div align="center">
-      <img src="./images/home-admin.png" alt="m8flow admin home page" width="720" />
+      <img src="./images/admin-home.png" alt="m8flow admin home page" width="720" />
    </div>
 
 2. Open **Processes** from the left sidebar.
 
    <div align="center">
-      <img src="./images/process-tab.png" alt="Processes tab in the sidebar" width="720" />
+      <img src="./images/sidebar-processes-tab.png" alt="Processes tab in the sidebar" width="720" />
    </div>
 
 3. In the **Process Groups** area, select the **+** button to create a process group.
 
    <div align="center">
-      <img src="./images/process-group-create.png" alt="Create process group button" width="720" />
+      <img src="./images/process-group-create-button.png" alt="Create process group button" width="720" />
    </div>
 
 4. Enter the process group details.
@@ -46,7 +47,7 @@ Use this tutorial to learn the basic m8flow workflow setup: organize work with a
    | **Description** | Short explanation of what the group contains. | `A test group` |
 
    <div align="center">
-      <img src="./images/process-group-details.png" alt="Process group details form" width="720" />
+      <img src="./images/process-group-details-form.png" alt="Process group details form" width="720" />
    </div>
 
 5. Select **Submit** to save the process group.
@@ -54,13 +55,13 @@ Use this tutorial to learn the basic m8flow workflow setup: organize work with a
 6. After the group is created, it appears in the **Process Groups** list.
 
    <div align="center">
-      <img src="./images/process-group-created-1.png" alt="Created process group in the list" width="720" />
+      <img src="./images/process-group-list.png" alt="Created process group in the list" width="720" />
    </div>
 
 7. Open the process group to view its details and continue creating process models inside it.
 
    <div align="center">
-      <img src="./images/process-group-created-2.png" alt="Created process group details view" width="720" />
+      <img src="./images/process-group-detail-view.png" alt="Created process group details view" width="720" />
    </div>
 
 ## Creating a Process Model
@@ -70,7 +71,7 @@ After creating a process group, open that group to create or import process mode
 1. In the process group details page, select the **+** button in the **Process Models** area.
 
    <div align="center">
-      <img src="./images/process-model-create.png" alt="Create process model button" width="720" />
+      <img src="./images/process-model-create-button.png" alt="Create process model button" width="720" />
    </div>
 
 2. Enter the process model details.
@@ -82,7 +83,7 @@ After creating a process group, open that group to create or import process mode
    | **Description** | Short explanation of what the process model contains. | `A test process model` |
 
    <div align="center">
-      <img src="./images/process-model-create-details.png" alt="Process model details form" width="720" />
+      <img src="./images/process-model-details-form.png" alt="Process model details form" width="720" />
    </div>
 
 3. Select **Submit** to save the process model.
@@ -90,13 +91,13 @@ After creating a process group, open that group to create or import process mode
 4. After the model is created, it appears in the **Process Models** list for the selected process group.
 
    <div align="center">
-      <img src="./images/process-model-created-1.png" alt="Created process model in the list" width="720" />
+      <img src="./images/process-model-list.png" alt="Created process model in the list" width="720" />
    </div>
 
 5. Open the process model to view its details and continue building the workflow.
 
    <div align="center">
-      <img src="./images/process-model-created-2.png" alt="Created process model details view" width="720" />
+      <img src="./images/process-model-detail-view.png" alt="Created process model details view" width="720" />
    </div>
 
 ## Create the First Workflow
@@ -106,13 +107,13 @@ After creating a process model, use the modeler to run your first workflow.
 1. Open the process model. A default workflow is created automatically when the process model is created.
 
    <div align="center">
-      <img src="./images/sample-workflow.png" alt="Default workflow in the modeler" width="720" />
+      <img src="./images/workflow-default.png" alt="Default workflow in the modeler" width="720" />
    </div>
 
 2. Select the **Start** button at the top to start the workflow.
 
    <div align="center">
-      <img src="./images/sample-workflow-start.png" alt="Start button to run the workflow" width="720" />
+      <img src="./images/workflow-start-button.png" alt="Start button to run the workflow" width="720" />
    </div>
 
 3. Enter **Continue** when prompted. The workflow completes after the step is submitted.
@@ -120,7 +121,7 @@ After creating a process model, use the modeler to run your first workflow.
 4. Open **Process Instances** from the left sidebar to verify the workflow ran successfully. The instance appears with a **Completed** status.
 
    <div align="center">
-      <img src="./images/process-instance.png" alt="Completed process instance in the list" width="720" />
+      <img src="./images/process-instance-completed.png" alt="Completed process instance in the list" width="720" />
    </div>
 
 ## How to Use the User Task
@@ -269,4 +270,34 @@ After opening a process model, you can convert a task element to a user task and
     <div align="center">
        <img src="./images/user-task-process-model-form.png" alt="Process model page showing the attached form" width="720" />
     </div>
+
+## How to Assign a Task to a User by Group
+
+After creating a process model, you can assign a user task to a specific group using swimlane pools.
+
+1. Create a new process model and open it in the modeler.
+
+2. Drag a **Pool** from the left panel onto the canvas. Convert the default task element in the pool to a **User Task** using the settings icon.
+
+3. Split the pool into two lanes. Place the start event in the first lane (no name required) and the user task and end event in the second lane.
+
+   To split the lane, select the lane and use the lane actions available on the right side of the pool.
+
+   <div align="center">
+      <img src="./images/swimlane-split-lane.png" alt="Splitting a pool into two lanes" width="720" />
+   </div>
+
+4. Set the second lane name to match an existing group in Keycloak (for example, `HR`, `Reviewers`, or `Finance`).
+
+   > **Note:** The group must exist in Keycloak, and the assigned user must belong to that group and have the correct role to access the task.
+
+   <div align="center">
+      <img src="./images/swimlane-group-assigned.png" alt="Pool lane named after a Keycloak group" width="720" />
+   </div>
+
+5. Save the workflow and select **Start** to run the process.
+
+6. Sign in as a user who belongs to the assigned group and verify that the task appears on their home page.
+
+7. Complete the task and open **Process Instances** from the left sidebar to confirm the task status is updated.
 
