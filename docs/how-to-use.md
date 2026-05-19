@@ -100,10 +100,25 @@ After creating a process group, open that group to create or import process mode
 
 ## Create the First Workflow
 
-After creating a process model, use the modeler to design and save your first workflow.
+After creating a process model, use the modeler to run your first workflow.
 
-This section will be expanded with the full workflow creation steps.
+1. Open the process model. A default workflow is created automatically when the process model is created.
 
-## Next Steps
+   <div align="center">
+      <img src="./images/sample-workflow.png" alt="Default workflow in the modeler" width="720" />
+   </div>
 
-Use the menu above to move between the process group, process model, and first workflow sections.
+2. Select the **Start** button at the top to start the workflow.
+
+   <div align="center">
+      <img src="./images/sample-workflow-start.png" alt="Start button to run the workflow" width="720" />
+   </div>
+
+3. Enter **Continue** when prompted. The workflow completes after the step is submitted.
+
+4. Open **Process Instances** from the left sidebar to verify the workflow ran successfully. The instance appears with a **Completed** status.
+
+   <div align="center">
+      <img src="./images/process-instance.png" alt="Completed process instance in the list" width="720" />
+   </div>
+
