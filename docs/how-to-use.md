@@ -11,6 +11,7 @@ Use this tutorial to learn the basic m8flow workflow setup: organize work with a
 - [Create the first workflow](#create-the-first-workflow)
 - [How to Use the User Task](#how-to-use-the-user-task)
 - [How to assign a task to User by Group](#how-to-assign-a-task-to-user-by-group)
+- [Next Steps](#next-steps)
 
 ## Before You Start
 
@@ -301,3 +302,11 @@ After creating a process model, you can assign a user task to a specific group u
 
 7. Complete the task and open **Process Instances** from the left sidebar to confirm the task status is updated.
 
+## Next Steps
+
+To go further, explore the following resources.
+
+| Resource | Description |
+|----------|-------------|
+| [Sample Templates](../m8flow-backend/sample_templates/README.md) | Pre-built workflow templates (approval flows, escalation workflows, form-driven processes) that can be loaded into the database on startup. |
+| [Connectors](../m8flow-connector-proxy/README.md) | Available service task connectors for integrating with external systems such as HTTP, SMTP, PostgreSQL, Slack, Salesforce, and Stripe. |
