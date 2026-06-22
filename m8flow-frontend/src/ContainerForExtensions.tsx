@@ -60,6 +60,9 @@ const ProcessModelShowWithSaveAsTemplate = lazy(
 );
 const ConnectorsPage = lazy(() => import('./views/Connectors'));
 const ConnectorConfigurePage = lazy(() => import('./views/ConnectorConfigure'));
+const ExternalFormAwareTaskShow = lazy(
+  () => import('./views/ExternalFormAwareTaskShow'),
+);
 
 // M8Flow Extension: clear tenant from localStorage on logout so next visit shows tenant selection
 const originalDoLogout = UserService.doLogout;
@@ -581,6 +584,12 @@ export default function ContainerForExtensions() {
                 element={<Navigate to="/" replace />}
               />
             )}
+          {/* m8 Extension: external-form user tasks show a "check your inbox" screen with
+              no in-app submit; all other tasks fall through to the upstream TaskShow. */}
+          <Route
+            path="tasks/:process_instance_id/:task_guid"
+            element={<ExternalFormAwareTaskShow />}
+          />
           {/* Catch-all route must be last */}
           <Route
             path="*"
