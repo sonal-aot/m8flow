@@ -13,6 +13,8 @@ export const useM8flowUriListForPermissions = () => {
       serviceTaskListPath: "/service-tasks",
       connectorsGroupedPath: "/m8flow/connectors-grouped",
       m8flowMcpConnectionPath: "/m8flow/mcp-connection",
+      m8flowMcpToolsCatalogPath: "/m8flow/mcp-tools",
+      m8flowMcpToolsExecutePath: "/m8flow/mcp-tools/execute",
       m8flowNatsTokensPath: "/m8flow/nats-tokens",
       // Event history is the one NATS monitoring view a tenant-admin may read (rows carry a
       // tenant; /varz and /jsz do not), so this is what gates the page and nav item rather
