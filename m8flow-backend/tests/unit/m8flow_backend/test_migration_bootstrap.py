@@ -28,6 +28,9 @@ from m8flow_backend.db import alembic_target_metadata
 
 _MIGRATIONS_DIR = Path(__file__).resolve().parents[3] / "migrations"
 _ROOT_REVISION = "1518b05122bc"
+# Newest revision; additive revisions after the root are idempotent (the root already
+# builds every table from live ORM metadata on a fresh database).
+_HEAD_REVISION = "7d4b1e9c3a20"
 
 
 def _orm_table_names() -> set[str]:
@@ -57,12 +60,12 @@ def test_upgrade_head_on_empty_sqlite_builds_full_schema(tmp_path, monkeypatch):
     missing = _orm_table_names() - actual
     assert not missing, f"upgrade head left tables uncreated: {sorted(missing)}"
 
-    # Single self-sufficient revision is stamped as head.
+    # The self-sufficient root plus idempotent additive revisions land at head.
     with engine.connect() as connection:
         stamped = connection.execute(
             sa.text("SELECT version_num FROM alembic_version_m8flow")
         ).scalar()
-    assert stamped == _ROOT_REVISION
+    assert stamped == _HEAD_REVISION
 
     # Base tenant seed lands regardless of dialect.
     with engine.connect() as connection:
@@ -104,7 +107,7 @@ def test_upgrade_head_self_heals_a_pre_squash_stamp(tmp_path, monkeypatch):
             sa.text("UPDATE alembic_version_m8flow SET version_num = 'v6g7h8i9j0k1'")
         )
 
-    # Must not raise, and must land back on the real root — data preserved.
+    # Must not raise, and must land back on head — data preserved.
     command.upgrade(cfg, "head")
 
     with engine.connect() as connection:
@@ -114,7 +117,7 @@ def test_upgrade_head_self_heals_a_pre_squash_stamp(tmp_path, monkeypatch):
         seeded = connection.execute(
             sa.text("SELECT slug FROM m8flow_tenant WHERE id = 'm8flow'")
         ).scalar()
-    assert stamped == _ROOT_REVISION
+    assert stamped == _HEAD_REVISION
     assert seeded == "m8flow"
 
 
@@ -135,7 +138,7 @@ def test_upgrade_head_on_empty_postgres_applies_rls_and_seed(monkeypatch):
 
         # Every tenant-scoped table (incl. scheduler_job, which used to get its
         # RLS in a separate late revision) carries the policy pair.
-        for table in ("process_instance", "secret", "scheduler_job"):
+        for table in ("process_instance", "secret", "scheduler_job", "m8flow_nats_event_audit", "m8flow_nats_api_keys"):
             policies = connection.execute(
                 sa.text("SELECT policyname FROM pg_policies WHERE tablename = :t"),
                 {"t": table},
