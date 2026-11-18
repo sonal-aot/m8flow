@@ -342,10 +342,14 @@ def read_json_file(path: Path) -> dict[str, Any]:
 def process_model_display_name(*, tenant_id: str, process_model_identifier: str) -> str:
     """Prefer process_model.json display_name; fall back to the leaf path segment."""
     meta = _tenant_json(tenant_id, process_model_identifier, "process_model.json", **_MODEL_PATH_ERROR)
+    return _display_name_from_meta(meta, process_model_identifier)
+
+
+def _display_name_from_meta(meta: dict[str, Any], identifier: str) -> str:
     display = meta.get("display_name")
     if isinstance(display, str) and display.strip():
         return display.strip()
-    return process_model_identifier.rstrip("/").split("/")[-1]
+    return identifier.rstrip("/").split("/")[-1]
 
 
 def process_model_status(*, tenant_id: str, process_model_identifier: str) -> str:
@@ -359,6 +363,10 @@ def process_model_status(*, tenant_id: str, process_model_identifier: str) -> st
     so new work still starts in draft as designed.
     """
     meta = _tenant_json(tenant_id, process_model_identifier, "process_model.json", **_MODEL_PATH_ERROR)
+    return _status_from_meta(meta)
+
+
+def _status_from_meta(meta: dict[str, Any]) -> str:
     status = meta.get("status")
     if isinstance(status, str) and status.strip() in PROCESS_MODEL_STATUSES:
         return status.strip()
@@ -376,10 +384,7 @@ def process_group_display_name(*, tenant_id: str, group_id: str) -> str:
     if not group_id:
         return ""
     meta = _tenant_json(tenant_id, group_id, "process_group.json", **_GROUP_PATH_ERROR)
-    display = meta.get("display_name")
-    if isinstance(display, str) and display.strip():
-        return display.strip()
-    return group_id.rstrip("/").split("/")[-1]
+    return _display_name_from_meta(meta, group_id)
 
 
 def _tenant_ids_for_fanout(tenant_id: str | None) -> list[str]:
@@ -409,28 +414,33 @@ def list_model_rows(*, tenant_id: str | None, group: str | None = None) -> list[
     ``tenant_id`` None fans out over every tenant; each row carries its own
     ``tenant_id`` so identical model identifiers in different tenants stay
     distinguishable (they collide by design -- the identifier is a path).
+
+    Reads each model's process_model.json and each group's process_group.json
+    once, and parses BPMN only for published models: only those can start, so
+    only their process ids are listed (M8F-703).
     """
     rows: list[dict[str, Any]] = []
     for tenant in _tenant_ids_for_fanout(tenant_id):
+        group_names: dict[str, str] = {}
         for model_id in list_models(group, tenant_id=tenant):
             group_id = process_group_id_for_model(model_id)
+            if group_id not in group_names:
+                group_names[group_id] = process_group_display_name(tenant_id=tenant, group_id=group_id)
+            meta = _tenant_json(tenant, model_id, "process_model.json", **_MODEL_PATH_ERROR)
+            status = _status_from_meta(meta)
             rows.append(
                 {
                     "id": model_id,
                     "tenant_id": tenant,
-                    "bpmn_processes": _bpmn_processes_for_model(
-                        tenant_id=tenant, process_model_identifier=model_id
+                    "bpmn_processes": (
+                        _bpmn_processes_for_model(tenant_id=tenant, process_model_identifier=model_id)
+                        if status == PROCESS_MODEL_STATUS_PUBLISHED
+                        else []
                     ),
-                    "display_name": process_model_display_name(
-                        tenant_id=tenant, process_model_identifier=model_id
-                    ),
+                    "display_name": _display_name_from_meta(meta, model_id),
                     "group_id": group_id,
-                    "group_display_name": process_group_display_name(
-                        tenant_id=tenant, group_id=group_id
-                    ),
-                    "status": process_model_status(
-                        tenant_id=tenant, process_model_identifier=model_id
-                    ),
+                    "group_display_name": group_names[group_id],
+                    "status": status,
                 }
             )
     return rows
@@ -440,12 +450,19 @@ def _bpmn_processes_for_model(*, tenant_id: str, process_model_identifier: str) 
     """Return every BPMN process id and its file within a catalog model."""
     processes: list[dict[str, str]] = []
     seen: set[tuple[str, str]] = set()
-    for file_info in list_model_files(
-        tenant_id=tenant_id, process_model_identifier=process_model_identifier
-    ):
-        file_name = file_info["name"]
-        if not file_name.lower().endswith(".bpmn"):
-            continue
+    try:
+        model_dir = _resolved_inside_tenant(tenant_id, process_model_identifier, **_MODEL_PATH_ERROR)
+    except ApiError:
+        return []
+    if not model_dir.is_dir():
+        return []
+    # Names only: list_model_files would also stat every file and parse every DMN.
+    # read_model_file below still applies the traversal/symlink guard per file.
+    bpmn_names = sorted(
+        (path.name for path in model_dir.iterdir() if path.name.lower().endswith(".bpmn")),
+        key=str.lower,
+    )
+    for file_name in bpmn_names:
         source = read_model_file(
             tenant_id=tenant_id,
             process_model_identifier=process_model_identifier,
